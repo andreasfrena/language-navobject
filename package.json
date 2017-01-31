@@ -1,0 +1,13 @@
+{
+  "name": "language-navObject",
+  "version": "0.0.0",
+  "private": true,
+  "author": "SpinningMoebius <andreas_frena@hotmail.de>",
+  "description": "Add syntax highlighting to Nav txt Object files in Atom",
+  "repository": "",
+  "license": "MIT",
+  "engines": {
+    "atom": "*"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,234 @@
+scopeName: 'source.navObject'
+name: 'NAV Object file'
+fileTypes: ['nof']
+
+patterns: [
+	{
+		include: '#nObject'
+	}
+]
+
+repository:
+	nObject:
+		patterns: [
+			{
+				begin: '\\b(OBJECT)\\s(Table|Codeunit|Page|Report|XMLport)\\s[0-9]+\\s\\w+\\b'
+				beginCaptures:
+					'1':
+						name: 'keyword.control.navObject'
+					'2':
+						name: 'entity.name.type.navObject'
+					'3':
+						name: 'entity.name.tag.navObject'
+					'4':
+						name: 'entity.name.function.navObject'
+				end: '}'
+				patterns: [
+					{ include: '#nObjectProperties' }
+					{ include: '#properties' }
+					{ include: '#fields' }
+				]
+				name: 'meta.object.navObject'
+			}
+		]
+	nObjectProperties:
+		patterns: [
+			{
+				begin: '(OBJECT\\-PROPERTIES)'
+				beginCaptures:
+					'0':
+						name: 'keyword.control.navObject'
+				end: '}'
+				name: 'entity.other.navObject'
+				patterns: [
+					{
+						match: '\\b(Date|Time|Modified|Version List)'
+						name: 'keyword.control.navObject'
+					}
+				]
+			}
+		]
+	properties:
+		patterns: [
+			{
+				begin: '\\b(PROPERTIES)'
+				beginCaptures:
+					'0':
+						name: 'keyword.control.navObject'
+				end: '}'
+				name: 'meta.object.properties.navObject'
+				patterns: [
+					{ include: '#triggers' }
+					{ include: '#attributes' }
+				]
+			}
+		]
+	fields:
+		patterns: [
+			{
+				begin: '\\b(FIELDS)'
+				beginCaptures:
+					'0':
+						name: 'keyword.control.navObject'
+				end: '}'
+				name: 'meta.objects.fields.navObject'
+				patterns: [
+					{
+						include: '#field'
+					}
+				]
+			}
+		]
+	field:
+		patterns: [
+			{
+				begin: '{([ 0-9]*);([ ]*);(.*);((Code|Date|Decimal|Option|Text|Boolean)[ 0-9]*);'
+				beginCaptures:
+					'1':
+						name: 'keyword.control.navObject'
+					'3':
+						name: 'entity.name.function.navObject'
+					'4':
+						name: 'entity.name.type.navObject'
+				end: '}'
+				name: 'meta.object.fields.field.navObject'
+				patterns: [
+					{ include: '#attributes' }
+					{ include: '#triggers' }
+					{ include: '#variables' }
+					{ include: '#numbers' }
+				]
+			}
+		]
+	attributes:
+		patterns: [
+			{
+				match:'(TableRelation|NotBlank|DecimalPlaces|(Min|Max|Init)Value|Description|(Field|Caption)Class|OptionString|AutoFormat(Expr|Type)|Editable|LookupPageID)'
+				name: 'entity.other.attribute-name.navObject'
+			}
+			{
+				begin: '(CaptionML|OptionCaptionML)=\\['
+				beginCaptures:
+					'1':
+						name: 'entity.other.attribute-name.navObject'
+				end: '\\]'
+				name: 'meta.object.attribute.mlAttribute.navObject'
+				patterns: [
+					{
+						match: '(DEU|ITA|ENU|DEA)'
+						name: 'constant.language.navObject'
+					}
+				]
+			}
+			{
+				match:'(CalcFormula)'
+				name: 'entity.other.attribute-name.navObject'
+			}
+		]
+	triggers:
+		patterns: [
+			{
+				begin: '\\b(OnInsert|OnModify|OnDelete|OnRename|OnValidate)'
+				beginCaptures:
+					'0':
+						name: 'support.function.navObject'
+				end: 'END;'
+				endCaptures:
+					'0':
+						name: 'keyword.control.navObject'
+				name: 'meta.object.properties.triggers.navObjects'
+				patterns: [
+					{
+						include: '#calCode'
+					}
+				]
+			}
+		]
+	calCode:
+		patterns: [
+			{ include: '#numbers' }
+			{ include: '#strings' }
+			{ include: '#variables'}
+			{ include: '#comments'}
+			{ include: '#keywords'}
+			{ include: '#constants'}
+			{ include: '#functions'}
+		]
+	numbers:
+		patterns: [
+			{
+				match: '\\b(([0-9]+\\.?[0-9]*)|(\\.[0-9]+))\\b'
+				name: 'constant.numeric.navObject'
+			}
+		]
+	strings:
+		patterns: [
+			{
+				begin: '\''
+				end: '\''
+				name: 'string.quoted.single.navObject'
+			}
+		]
+	variables:
+		patterns: [
+			{
+				begin: '"'
+				end: '"'
+				name: 'variable.other.navObject'
+			}
+		]
+	comments:
+		patterns: [
+			{
+				comment: 'Line comments'
+				begin: '//'
+				end: '\\n'
+				name: 'comment.line.double-slash.navObject'
+			}
+			{
+				comment: 'Block comments'
+				begin: '[ ]{6,}{'
+				beginCaptures:
+					'0':
+						name: 'punctuation.definition.comment.begin.navObject'
+				end: '}'
+				endCaptures:
+					'0':
+						name: 'punctuation.definition.comment.end.navObject'
+				name: 'comment.block.navObject'
+			}
+		]
+	keywords:
+		patterns: [
+			{
+				match: '\\b(IF|NOT|THEN|BEGIN|END|ELSE|REPEAT|UNTIL|CASE|OF|VAR)\\b'
+				name: 'keyword.control.navObject'
+			}
+		]
+	constants:
+		patterns: [
+			{
+				match: '\\b(TODAY|WORKDATE|TRUE|FALSE)\\b'
+				name: 'constant.language.navObject'
+			}
+			{
+				match: 'Text[0-9]+'
+				name: 'constant.other.navObject'
+			}
+		]
+	functions:
+		patterns: [
+			{
+				match: '\\b(PROCEDURE)\\s\\w+@[0-9]+\\(\\)(\\s:\\s.*)?;'
+				captures:
+					'1':
+						name: 'keyword.control.navObject'
+					'2':
+						name: 'entity.name.function.navObject'
+				name: 'meta.function.navObject'
+			}
+			{
+				match: '(EXIT|SETRANGE|SETCURRENTKEY|(FIELD)?ERROR|TABLECAPTION|FIELDCAPTION|DELETEALL|STRSUBSTNO|ROUND)'
+				name: 'support.function.navObject'
+			}
+		]
